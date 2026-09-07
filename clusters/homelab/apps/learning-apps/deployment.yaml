@@ -15,8 +15,7 @@ spec:
     spec:
       containers:
         - name: app
-          image:
-          registry.cihuyproject.my.id/vault-learning-app:latest
+          image: registry.cihuyproject.my.id/vault-learning-app:latest
           ports:
             - containerPort: 5000
           envFrom:
