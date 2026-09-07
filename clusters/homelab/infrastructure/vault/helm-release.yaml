@@ -31,3 +31,7 @@ spec:
           path: /vault/data
       ui:
         enabled: true
+      service:
+        type: NodePort
+        port: 8200
+        nodePort: 30200
