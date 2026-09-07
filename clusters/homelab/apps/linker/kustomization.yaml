@@ -1,10 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-    - git-repository.yaml
-    - helm-release.yaml
-    - namespace.yaml
-    - secret-store.yaml
-    - external-secret.yaml
-    - service.yaml
-    - google-oauth-secret.yaml
+#    - git-repository.yaml
+#    - helm-release.yaml
+#    - namespace.yaml
+#    - secret-store.yaml
+#    - external-secret.yaml
+#    - service.yaml
+#    - google-oauth-secret.yaml
