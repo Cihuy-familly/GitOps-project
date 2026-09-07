@@ -21,13 +21,13 @@ spec:
       dev:
         enabled: false
       dataStorage:
-	enabled: true
-	size: 5Gi
-	storageClass: local-path
+        enabled: true
+        size: 5Gi
+        storageClass: local-path
       standalone:
-	enabled: true
+        enabled: true
       storage:
-	file:
-	  path: /vault/data
+        file:
+          path: /vault/data
       ui:
-	enabled: true
+        enabled: true
