@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-learning-app
+  namespace: vault-learning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault-learning-app
+  template:
+    metadata:
+      labels:
+        app: vault-learning-app
+    spec:
+      containers:
+        - name: app
+          image:
+          registry.cihuyproject.my.id/vault-learning-app:latest
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - secretRef:
+                name: app-secrets-k8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault-learning-app
+  namespace: vault-learning
+spec:
+  selector:
+    app: vault-learning-app
+  ports:
+    - port: 80
+      targetPort: 5001
+      nodePort: 30080
+  type: NodePort
