@@ -16,7 +16,6 @@ metadata:
   namespace: flux-system
 spec:
   type: discord
-  category: Server
   channel: flux-sandbox
   secretRef:
     name: discord-webhook
