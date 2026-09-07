@@ -18,25 +18,16 @@ spec:
         namespace: flux-system
   values:
     server:
-      # to disable Dev mode
       dev:
         enabled: false
-
-      # Adding persintance storage
       dataStorage:
 	enabled: true
 	size: 5Gi
 	storageClass: local-path
-      
-      # standalonemod mode for singgle pod
       standalone:
 	enabled: true
-     
-      # file base storage backend
       storage:
 	file:
 	  path: /vault/data
-	
-      # enable UI 
       ui:
 	enabled: true
