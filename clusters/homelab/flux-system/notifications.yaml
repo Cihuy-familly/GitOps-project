@@ -1,0 +1,38 @@
+# 1. The Secret (Hides your webhook URL)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: discord-webhook
+  namespace: flux-system
+type: Opaque
+stringData:
+  address: "https://discord.com/api/webhooks/1546403487238070320/kMBYLrdNsK6H8qfTAfoLin7s6EuMw-QllXVkQFCLfS-tk0EirNX_NXTwibpT6MkpIuTo"
+---
+# 2. The Provider (Tells Flux WHERE to send the message)
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: discord
+  namespace: flux-system
+spec:
+  type: discord
+  category: Server
+  channel: flux-sandbox
+  secretRef:
+    name: discord-webhook
+---
+# 3. The Alert (Tells Flux WHEN to send the message)
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: homelab-alerts
+  namespace: flux-system
+spec:
+  providerRef:
+    name: discord
+  eventSeverity: error
+  eventSources:
+    - kind: Kustomization
+      name: "*"
+    - kind: HelmRelease
+      name: "*"
