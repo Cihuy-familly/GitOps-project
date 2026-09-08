@@ -52,7 +52,8 @@ spec:
         apiVersion: 1
         datasources:
           - name: VictoriaMetrics
-            type: prometheus
+            uid: VictoriaMetrics
+            type: VictoriaMetrics
             url: http://victoria-metrics-victoria-metrics-single-server:8428
             access: proxy
             isDefault: true
