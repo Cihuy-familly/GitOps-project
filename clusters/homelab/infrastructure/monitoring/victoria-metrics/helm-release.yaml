@@ -37,14 +37,14 @@ spec:
       service:
         type: ClusterIP
         port: 8428
+      extraArgs:
+        promscrape.config: /config/promscrape.yml
+      extraVolumes:
+        - name: promscrape-config
+          configMap:
+            name: victoria-metrics-scrape-config
+      extraVolumeMounts:
+        - name: promscrape-config
+          mountPath: /config
     serviceMonitor:
       enabled: true
-    extraArgs:
-      promscrape.config: /config/promscrape.yml
-    extraVolumes:
-      - name: promscrape-config
-        configMap:
-          name: victoria-metrics-scrape-config
-    extraVolumeMounts:
-      - name: promscrape-config
-        mountPath: /config
