@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: monitoring
+data:
+  redis.conf: |
+    # Memory management
+    maxmemory 256mb
+    maxmemory-policy allkeys-lru
+
+    # Persistence - RDB snapshots
+    save 900 1
+    save 300 10
+    save 60 10000
+
+    # Append-only file for durability
+    appendonly yes
+    appendfsync everysec
+
+    # Security - require password
+    requirepass redis-homelab-2026
+
+    # Network
+    bind 0.0.0.0
+    protected-mode yes

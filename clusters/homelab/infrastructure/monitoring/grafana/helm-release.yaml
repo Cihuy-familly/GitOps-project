@@ -24,6 +24,10 @@ spec:
   values:
     adminUser: admin
     adminPassword: homelab-monitor-2026
+    sidecar:
+        dashboards:
+          enabled: true
+          label: grafana_dashboard  
 
     persistence:
       enabled: true
@@ -48,6 +52,6 @@ spec:
         datasources:
           - name: VictoriaMetrics
             type: prometheus
-            url: http://victoria-metrics-server:8428
+            url: http://victoria-metrics-victoria-metrics-single-server:8428
             access: proxy
             isDefault: true
