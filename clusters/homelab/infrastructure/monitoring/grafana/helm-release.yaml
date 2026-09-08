@@ -24,10 +24,11 @@ spec:
   values:
     adminUser: admin
     adminPassword: homelab-monitor-2026
+
     sidecar:
-        dashboards:
-          enabled: true
-          label: grafana_dashboard  
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
 
     persistence:
       enabled: true
