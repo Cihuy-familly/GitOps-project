@@ -29,9 +29,6 @@ spec:
       dashboards:
         enabled: true
         label: grafana_dashboard
-      alerting:
-        enabled: true
-        label: grafana_alert
 
     persistence:
       enabled: true
@@ -59,3 +56,11 @@ spec:
             url: http://victoria-metrics-victoria-metrics-single-server:8428
             access: proxy
             isDefault: true
+
+    extraVolumeMounts:
+      - name: alerting-config
+        mountPath: /etc/grafana/provisioning/alerting
+    extraVolumes:
+      - name: alerting-config
+        configMap:
+          name: redis-alerting-config
