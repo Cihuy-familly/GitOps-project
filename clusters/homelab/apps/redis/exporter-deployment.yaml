@@ -17,7 +17,7 @@ spec:
         - name: redis-exporter
           image: oliver006/redis_exporter:latest
           args:
-            - --redis.addr=redis://redis:6379
+            - --redis.addr=redis://redis.redis.svc.cluster.local:6379
             - --redis.password=redis-homelab-2026
           ports:
             - containerPort: 9121
