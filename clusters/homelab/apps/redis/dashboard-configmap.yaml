@@ -1647,7 +1647,6 @@ data:
       },
       "timezone": "browser",
       "title": "Redis SRX POC",
-      "uid": "redis-srx-poc",
-      "version": 3,
+      "version": 1,
       "weekStart": ""
     }
