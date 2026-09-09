@@ -51,7 +51,7 @@ data:
         rules:
           - uid: redis-down
             title: Redis Down
-            condition: B
+            condition: C
             data:
               - refId: A
                 relativeTimeRange:
@@ -70,6 +70,18 @@ data:
                   to: 0
                 datasourceUid: __expr__
                 model:
+                  expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 432000
+                  reducer: last
+                  refId: B
+                  type: reduce
+              - refId: C
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params:
@@ -79,7 +91,7 @@ data:
                         type: and
                       query:
                         params:
-                          - B
+                          - C
                       reducer:
                         params: []
                         type: last
@@ -87,12 +99,11 @@ data:
                   datasource:
                     type: __expr__
                     uid: __expr__
-                  expression: A
+                  expression: B
                   intervalMs: 1000
                   maxDataPoints: 432000
-                  reducer: last
-                  refId: B
-                  type: reduce
+                  refId: C
+                  type: threshold
             noDataState: Alerting
             execErrState: Error
             for: 1m
@@ -104,7 +115,7 @@ data:
 
           - uid: redis-memory-high
             title: Redis Memory Usage High
-            condition: B
+            condition: C
             data:
               - refId: A
                 relativeTimeRange:
@@ -112,12 +123,24 @@ data:
                   to: 0
                 datasourceUid: victoriametrics
                 model:
-                  expr: redis_used_memory / redis_mem_fragmentation_ratio
+                  expr: redis_memory_used_bytes
                   instant: true
                   intervalMs: 1000
                   maxDataPoints: 43200
                   refId: A
               - refId: B
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 432000
+                  reducer: last
+                  refId: B
+                  type: reduce
+              - refId: C
                 relativeTimeRange:
                   from: 300
                   to: 0
@@ -132,7 +155,7 @@ data:
                         type: and
                       query:
                         params:
-                          - B
+                          - C
                       reducer:
                         params: []
                         type: last
@@ -140,24 +163,23 @@ data:
                   datasource:
                     type: __expr__
                     uid: __expr__
-                  expression: A
+                  expression: B
                   intervalMs: 1000
                   maxDataPoints: 432000
-                  reducer: last
-                  refId: B
-                  type: reduce
+                  refId: C
+                  type: threshold
             noDataState: OK
             execErrState: Error
             for: 5m
             annotations:
-              description: Redis memory usage is high
-              summary: Redis memory usage exceeds threshold
+              description: Redis memory usage exceeds 180MB
+              summary: Redis memory usage is high
             labels:
               severity: warning
 
           - uid: redis-clients-high
             title: Redis Connected Clients High
-            condition: B
+            condition: C
             data:
               - refId: A
                 relativeTimeRange:
@@ -176,6 +198,18 @@ data:
                   to: 0
                 datasourceUid: __expr__
                 model:
+                  expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 432000
+                  reducer: last
+                  refId: B
+                  type: reduce
+              - refId: C
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params:
@@ -185,7 +219,7 @@ data:
                         type: and
                       query:
                         params:
-                          - B
+                          - C
                       reducer:
                         params: []
                         type: last
@@ -193,12 +227,11 @@ data:
                   datasource:
                     type: __expr__
                     uid: __expr__
-                  expression: A
+                  expression: B
                   intervalMs: 1000
                   maxDataPoints: 432000
-                  reducer: last
-                  refId: B
-                  type: reduce
+                  refId: C
+                  type: threshold
             noDataState: OK
             execErrState: Error
             for: 5m
@@ -210,7 +243,7 @@ data:
 
           - uid: redis-evicted-keys
             title: Redis Evicted Keys
-            condition: B
+            condition: C
             data:
               - refId: A
                 relativeTimeRange:
@@ -229,6 +262,18 @@ data:
                   to: 0
                 datasourceUid: __expr__
                 model:
+                  expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 432000
+                  reducer: last
+                  refId: B
+                  type: reduce
+              - refId: C
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params:
@@ -238,7 +283,7 @@ data:
                         type: and
                       query:
                         params:
-                          - B
+                          - C
                       reducer:
                         params: []
                         type: last
@@ -246,12 +291,11 @@ data:
                   datasource:
                     type: __expr__
                     uid: __expr__
-                  expression: A
+                  expression: B
                   intervalMs: 1000
                   maxDataPoints: 432000
-                  reducer: last
-                  refId: B
-                  type: reduce
+                  refId: C
+                  type: threshold
             noDataState: OK
             execErrState: Error
             for: 1m
@@ -263,7 +307,7 @@ data:
 
           - uid: redis-rejected-connections
             title: Redis Rejected Connections
-            condition: B
+            condition: C
             data:
               - refId: A
                 relativeTimeRange:
@@ -282,6 +326,18 @@ data:
                   to: 0
                 datasourceUid: __expr__
                 model:
+                  expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 432000
+                  reducer: last
+                  refId: B
+                  type: reduce
+              - refId: C
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params:
@@ -291,7 +347,7 @@ data:
                         type: and
                       query:
                         params:
-                          - B
+                          - C
                       reducer:
                         params: []
                         type: last
@@ -299,12 +355,11 @@ data:
                   datasource:
                     type: __expr__
                     uid: __expr__
-                  expression: A
+                  expression: B
                   intervalMs: 1000
                   maxDataPoints: 432000
-                  reducer: last
-                  refId: B
-                  type: reduce
+                  refId: C
+                  type: threshold
             noDataState: OK
             execErrState: Error
             for: 1m
@@ -316,7 +371,7 @@ data:
 
           - uid: redis-restart
             title: Redis Restarted
-            condition: B
+            condition: C
             data:
               - refId: A
                 relativeTimeRange:
@@ -335,6 +390,18 @@ data:
                   to: 0
                 datasourceUid: __expr__
                 model:
+                  expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 432000
+                  reducer: last
+                  refId: B
+                  type: reduce
+              - refId: C
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params:
@@ -344,7 +411,7 @@ data:
                         type: and
                       query:
                         params:
-                          - B
+                          - C
                       reducer:
                         params: []
                         type: last
@@ -352,12 +419,11 @@ data:
                   datasource:
                     type: __expr__
                     uid: __expr__
-                  expression: A
+                  expression: B
                   intervalMs: 1000
                   maxDataPoints: 432000
-                  reducer: last
-                  refId: B
-                  type: reduce
+                  refId: C
+                  type: threshold
             noDataState: OK
             execErrState: Error
             for: 1m
