@@ -29,6 +29,9 @@ spec:
       dashboards:
         enabled: true
         label: grafana_dashboard
+      alerting:
+        enabled: true
+        label: grafana_alert
 
     persistence:
       enabled: true
