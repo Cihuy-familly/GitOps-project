@@ -379,7 +379,7 @@ data:
                   to: 0
                 datasourceUid: victoriametrics
                 model:
-                  expr: changes(redis_uptime_in_seconds[10m])
+                  expr: resets(redis_uptime_in_seconds[10m]) > 0
                   instant: true
                   intervalMs: 1000
                   maxDataPoints: 43200
