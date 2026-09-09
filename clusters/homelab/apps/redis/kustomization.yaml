@@ -7,5 +7,6 @@ resources:
   - service.yaml
   - exporter-deployment.yaml
   - exporter-service.yaml
-#  - servicemonitor.yaml
+  - servicemonitor.yaml
   - dashboard-configmap.yaml
+  - alerting-config.yaml
