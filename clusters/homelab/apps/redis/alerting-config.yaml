@@ -6,7 +6,7 @@ metadata:
 data:
   alerting.yaml: |
     apiVersion: 1
-    
+
     contactPoints:
       - orgId: 1
         name: Discord
@@ -16,7 +16,7 @@ data:
             settings:
               url: "https://discord.com/api/webhooks/1547069230808301670/LK5J3SCU0Fkam6NUaxYWgCLWmGJYcecp0NEsO3h_TQNwyabcdnXr3rseWwuhQptFSJG9"
               message: "{{ template \"default.message\" . }}"
-    
+
     policies:
       - orgId: 1
         receiver: Discord
@@ -42,7 +42,7 @@ data:
               - severity = info
             group_wait: 1m
             repeat_interval: 24h
-    
+
     groups:
       - orgId: 1
         name: Redis Alerts
@@ -51,7 +51,7 @@ data:
         rules:
           - uid: redis-down
             title: Redis Down
-            condition: C
+            condition: B
             data:
               - refId: A
                 relativeTimeRange:
@@ -72,8 +72,9 @@ data:
                 model:
                   conditions:
                     - evaluator:
-                        params: []
-                        type: gt
+                        params:
+                          - 1
+                        type: lt
                       operator:
                         type: and
                       query:
@@ -88,39 +89,12 @@ data:
                     uid: __expr__
                   expression: A
                   intervalMs: 1000
-                  maxDataPoints: 43200
+                  maxDataPoints: 432000
+                  reducer: last
                   refId: B
                   type: reduce
-              - refId: C
-                relativeTimeRange:
-                  from: 300
-                  to: 0
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                    - evaluator:
-                        params:
-                          - 1
-                        type: lt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                          - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                  datasource:
-                    type: __expr__
-                    uid: __expr__
-                  expression: B
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  refId: C
-                  type: threshold
             noDataState: Alerting
-            execErrState: Alerting
+            execErrState: Error
             for: 1m
             annotations:
               description: Redis instance is down
@@ -129,8 +103,8 @@ data:
               severity: critical
 
           - uid: redis-memory-high
-            title: Redis Memory Usage > 70%
-            condition: C
+            title: Redis Memory Usage High
+            condition: B
             data:
               - refId: A
                 relativeTimeRange:
@@ -138,7 +112,7 @@ data:
                   to: 0
                 datasourceUid: victoriametrics
                 model:
-                  expr: redis_mem_fragmentation_ratio
+                  expr: redis_used_memory / redis_mem_fragmentation_ratio
                   instant: true
                   intervalMs: 1000
                   maxDataPoints: 43200
@@ -151,7 +125,8 @@ data:
                 model:
                   conditions:
                     - evaluator:
-                        params: []
+                        params:
+                          - 180000000
                         type: gt
                       operator:
                         type: and
@@ -167,49 +142,22 @@ data:
                     uid: __expr__
                   expression: A
                   intervalMs: 1000
-                  maxDataPoints: 43200
+                  maxDataPoints: 432000
+                  reducer: last
                   refId: B
                   type: reduce
-              - refId: C
-                relativeTimeRange:
-                  from: 300
-                  to: 0
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                    - evaluator:
-                        params:
-                          - 1.7
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                          - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                  datasource:
-                    type: __expr__
-                    uid: __expr__
-                  expression: B
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  refId: C
-                  type: threshold
             noDataState: OK
-            execErrState: Alerting
+            execErrState: Error
             for: 5m
             annotations:
-              description: Redis memory fragmentation ratio is above 1.7
-              summary: Redis memory usage is high
+              description: Redis memory usage is high
+              summary: Redis memory usage exceeds threshold
             labels:
               severity: warning
 
           - uid: redis-clients-high
             title: Redis Connected Clients High
-            condition: C
+            condition: B
             data:
               - refId: A
                 relativeTimeRange:
@@ -230,7 +178,8 @@ data:
                 model:
                   conditions:
                     - evaluator:
-                        params: []
+                        params:
+                          - 100
                         type: gt
                       operator:
                         type: and
@@ -246,39 +195,12 @@ data:
                     uid: __expr__
                   expression: A
                   intervalMs: 1000
-                  maxDataPoints: 43200
+                  maxDataPoints: 432000
+                  reducer: last
                   refId: B
                   type: reduce
-              - refId: C
-                relativeTimeRange:
-                  from: 300
-                  to: 0
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                    - evaluator:
-                        params:
-                          - 100
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                          - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                  datasource:
-                    type: __expr__
-                    uid: __expr__
-                  expression: B
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  refId: C
-                  type: threshold
             noDataState: OK
-            execErrState: Alerting
+            execErrState: Error
             for: 5m
             annotations:
               description: Redis has more than 100 connected clients
@@ -288,7 +210,7 @@ data:
 
           - uid: redis-evicted-keys
             title: Redis Evicted Keys
-            condition: C
+            condition: B
             data:
               - refId: A
                 relativeTimeRange:
@@ -309,7 +231,8 @@ data:
                 model:
                   conditions:
                     - evaluator:
-                        params: []
+                        params:
+                          - 0
                         type: gt
                       operator:
                         type: and
@@ -325,39 +248,12 @@ data:
                     uid: __expr__
                   expression: A
                   intervalMs: 1000
-                  maxDataPoints: 43200
+                  maxDataPoints: 432000
+                  reducer: last
                   refId: B
                   type: reduce
-              - refId: C
-                relativeTimeRange:
-                  from: 300
-                  to: 0
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                    - evaluator:
-                        params:
-                          - 0
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                          - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                  datasource:
-                    type: __expr__
-                    uid: __expr__
-                  expression: B
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  refId: C
-                  type: threshold
             noDataState: OK
-            execErrState: Alerting
+            execErrState: Error
             for: 1m
             annotations:
               description: Redis is evicting keys due to memory pressure
@@ -367,7 +263,7 @@ data:
 
           - uid: redis-rejected-connections
             title: Redis Rejected Connections
-            condition: C
+            condition: B
             data:
               - refId: A
                 relativeTimeRange:
@@ -388,7 +284,8 @@ data:
                 model:
                   conditions:
                     - evaluator:
-                        params: []
+                        params:
+                          - 0
                         type: gt
                       operator:
                         type: and
@@ -404,39 +301,12 @@ data:
                     uid: __expr__
                   expression: A
                   intervalMs: 1000
-                  maxDataPoints: 43200
+                  maxDataPoints: 432000
+                  reducer: last
                   refId: B
                   type: reduce
-              - refId: C
-                relativeTimeRange:
-                  from: 300
-                  to: 0
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                    - evaluator:
-                        params:
-                          - 0
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                          - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                  datasource:
-                    type: __expr__
-                    uid: __expr__
-                  expression: B
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  refId: C
-                  type: threshold
             noDataState: OK
-            execErrState: Alerting
+            execErrState: Error
             for: 1m
             annotations:
               description: Redis is rejecting connections
@@ -446,7 +316,7 @@ data:
 
           - uid: redis-restart
             title: Redis Restarted
-            condition: C
+            condition: B
             data:
               - refId: A
                 relativeTimeRange:
@@ -467,7 +337,8 @@ data:
                 model:
                   conditions:
                     - evaluator:
-                        params: []
+                        params:
+                          - 0
                         type: gt
                       operator:
                         type: and
@@ -483,39 +354,12 @@ data:
                     uid: __expr__
                   expression: A
                   intervalMs: 1000
-                  maxDataPoints: 43200
+                  maxDataPoints: 432000
+                  reducer: last
                   refId: B
                   type: reduce
-              - refId: C
-                relativeTimeRange:
-                  from: 600
-                  to: 0
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                    - evaluator:
-                        params:
-                          - 0
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                          - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                  datasource:
-                    type: __expr__
-                    uid: __expr__
-                  expression: B
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  refId: C
-                  type: threshold
             noDataState: OK
-            execErrState: Alerting
+            execErrState: Error
             for: 1m
             annotations:
               description: Redis instance has restarted
