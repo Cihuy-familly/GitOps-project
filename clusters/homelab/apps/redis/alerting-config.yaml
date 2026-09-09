@@ -57,7 +57,7 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: VictoriaMetrics
+                datasourceUid: victoriametrics
                 model:
                   expr: redis_up
                   instant: true
@@ -136,7 +136,7 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: VictoriaMetrics
+                datasourceUid: victoriametrics
                 model:
                   expr: redis_mem_fragmentation_ratio
                   instant: true
@@ -215,7 +215,7 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: VictoriaMetrics
+                datasourceUid: victoriametrics
                 model:
                   expr: redis_connected_clients
                   instant: true
@@ -294,7 +294,7 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: VictoriaMetrics
+                datasourceUid: victoriametrics
                 model:
                   expr: increase(redis_evicted_keys_total[5m])
                   instant: true
@@ -373,7 +373,7 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: VictoriaMetrics
+                datasourceUid: victoriametrics
                 model:
                   expr: increase(redis_rejected_connections_total[5m])
                   instant: true
@@ -452,7 +452,7 @@ data:
                 relativeTimeRange:
                   from: 600
                   to: 0
-                datasourceUid: VictoriaMetrics
+                datasourceUid: victoriametrics
                 model:
                   expr: changes(redis_uptime_in_seconds[10m])
                   instant: true
