@@ -18,45 +18,34 @@ spec:
         namespace: flux-system
       interval: 1m
   values:
-    labels:
-      app: istio-ingressgateway
-      istio: ingressgateway
+    defaults:
+      labels:
+        app: istio-ingressgateway
+        istio: ingressgateway
 
-    replicas: 1
-    autoscaleEnabled: false
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        memory: 256Mi
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          memory: 256Mi
 
-    ports:
-      - port: 15021
-        targetPort: 15021
-        name: status-port
-        protocol: TCP
-      - port: 80
-        targetPort: 8080
-        name: http2
-        protocol: TCP
-      - port: 443
-        targetPort: 8443
-        name: https
-        protocol: TCP
+      service:
+        type: LoadBalancer
+        ports:
+          - name: status-port
+            port: 15021
+            protocol: TCP
+            targetPort: 15021
+          - name: http2
+            port: 80
+            protocol: TCP
+            targetPort: 8080
+          - name: https
+            port: 443
+            protocol: TCP
+            targetPort: 8443
 
-    service:
-      type: LoadBalancer
-      ports:
-        - port: 15021
-          targetPort: 15021
-          name: status-port
-          protocol: TCP
-        - port: 80
-          targetPort: 8080
-          name: http2
-          protocol: TCP
-        - port: 443
-          targetPort: 8443
-          name: https
-          protocol: TCP
+      autoscaling:
+        enabled: false
