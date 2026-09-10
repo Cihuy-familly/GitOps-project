@@ -4,3 +4,4 @@ resources:
   - vault
   - eso
   - monitoring
+  - istio

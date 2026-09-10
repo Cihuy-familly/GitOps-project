@@ -1,0 +1,70 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-ingress
+  namespace: istio-system
+spec:
+  interval: 1m
+  releaseName: istio-ingress
+  dependsOn:
+    - name: istio-istiod
+  chart:
+    spec:
+      chart: gateway
+      version: "1.23.x"
+      sourceRef:
+        kind: HelmRepository
+        name: istio
+        namespace: flux-system
+      interval: 1m
+  values:
+    global:
+      istioNamespace: istio-system
+
+    revision: ""
+
+    gateway:
+      enabled: true
+      name: istio-ingressgateway
+      labels:
+        app: istio-ingressgateway
+        istio: ingressgateway
+
+      replicas: 1
+      autoscaleEnabled: false
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+
+      ports:
+        - port: 15021
+          targetPort: 15021
+          name: status-port
+          protocol: TCP
+        - port: 80
+          targetPort: 8080
+          name: http2
+          protocol: TCP
+        - port: 443
+          targetPort: 8443
+          name: https
+          protocol: TCP
+
+      service:
+        type: LoadBalancer
+        ports:
+          - port: 15021
+            targetPort: 15021
+            name: status-port
+            protocol: TCP
+          - port: 80
+            targetPort: 8080
+            name: http2
+            protocol: TCP
+          - port: 443
+            targetPort: 8443
+            name: https
+            protocol: TCP
