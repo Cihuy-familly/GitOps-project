@@ -5,7 +5,6 @@ metadata:
   namespace: default
 spec:
   hosts:
-    - "sandbox.cihuylabs.my.id"
     - "cihuylabs.my.id"
     - "*.cihuylabs.my.id"
   gateways:

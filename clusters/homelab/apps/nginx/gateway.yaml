@@ -12,6 +12,5 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - "sandbox.cihuylabs.my.id"
         - "cihuylabs.my.id"
         - "*.cihuylabs.my.id"
