@@ -12,7 +12,7 @@ spec:
   http:
     - match:
         - authority:
-            prefix: sandbox.
+            prefix: portfolio.
       route:
         - destination:
             host: portfolio.portfolio.svc.cluster.local
