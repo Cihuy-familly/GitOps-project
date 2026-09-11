@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cihuylabs-landing
+  namespace: cihuylabs-landing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cihuylabs-landing
+  template:
+    metadata:
+      labels:
+        app: cihuylabs-landing
+    spec:
+      imagePullSecrets:
+        - name: registry-credentials
+      containers:
+        - name: cihuylabs-landing
+          image: registry.cihuyproject.my.id/cihuylabs-landing:latest
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 128Mi

@@ -19,6 +19,14 @@ spec:
             port:
               number: 3013
     - match:
+        - authority:
+            exact: cihuylabs.my.id
+      route:
+        - destination:
+            host: cihuylabs-landing.cihuylabs-landing.svc.cluster.local
+            port:
+              number: 80
+    - match:
         - uri:
             prefix: /
       route:
