@@ -13,6 +13,8 @@ spec:
       labels:
         app: portfolio
     spec:
+      imagePullSecrets:
+        - name: registry-credentials
       containers:
         - name: portfolio
           image: registry.cihuyproject.my.id/portfolio:latest
