@@ -11,6 +11,14 @@ spec:
     - sandbox-gateway
   http:
     - match:
+        - authority:
+            prefix: sandbox.
+      route:
+        - destination:
+            host: portfolio.portfolio.svc.cluster.local
+            port:
+              number: 3013
+    - match:
         - uri:
             prefix: /
       route:
