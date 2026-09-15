@@ -6,3 +6,4 @@ resources:
   - apps
   - network
   - github-action
+  - cluster-store.yaml
