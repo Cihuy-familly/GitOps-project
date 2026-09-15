@@ -18,8 +18,8 @@ spec:
         vault.hashicorp.com/agent-inject-secret-api-key: "secret/data/demo-order-service"
         vault.hashicorp.com/agent-inject-template-api-key: |
           {{- with secret "secret/data/demo-order-service" -}}
-          export API_KEY={{ .Data.data.api-key }}
-          export DB_PASSWORD={{ .Data.data.db-password }}
+          export API_KEY={{ index .Data.data "api-key" }}
+          export DB_PASSWORD={{ index .Data.data "db-password" }}
           {{- end -}}
     spec:
       serviceAccountName: demo-order-sa
