@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-order-service
+  namespace: demo-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-order-service
+  template:
+    metadata:
+      labels:
+        app: demo-order-service
+    spec:
+      imagePullSecrets:
+        - name: registry-credentials
+      containers:
+        - name: app
+          image: registry.cihuyproject.my.id/demo-order-service:latest
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: APP_VERSION
+              value: "1.0.0"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 90m
+              memory: 128Mi

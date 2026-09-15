@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-order-service
+  namespace: demo-order
+spec:
+  type: ClusterIP
+  selector:
+    app: demo-order-service
+  ports:
+    - port: 5000
+      targetPort: 5000
+      name: http
