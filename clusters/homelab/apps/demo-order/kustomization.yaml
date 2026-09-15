@@ -4,4 +4,4 @@ resources:
   - namespace.yaml
   - deployment.yaml
   - service.yaml
-  - external-secret.yaml
+#  - external-secret.yaml
