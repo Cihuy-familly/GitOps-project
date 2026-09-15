@@ -4,5 +4,5 @@ resources:
   - namespace.yaml
   - deployment.yaml
   - service.yaml
-  - secret-store.yaml
+  - cluster-store.yaml
   - external-secret.yaml
