@@ -22,6 +22,7 @@ spec:
           export DB_PASSWORD={{ .Data.data.db-password }}
           {{- end -}}
     spec:
+      serviceAccountName: demo-order-sa
       imagePullSecrets:
         - name: registry-credentials
       containers:
