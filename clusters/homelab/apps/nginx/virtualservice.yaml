@@ -27,6 +27,14 @@ spec:
             port:
               number: 80
     - match:
+        - authority:
+            prefix: demo.
+      route:
+        - destination:
+            host: demo-order-service.demo-order.svc.cluster.local
+            port:
+              number: 5000
+    - match:
         - uri:
             prefix: /
       route:
