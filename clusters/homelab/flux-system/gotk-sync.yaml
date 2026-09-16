@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/DrdmRandom/gitOps-project
+  url: https://github.com/Cihuy-familly/GitOps-project
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
