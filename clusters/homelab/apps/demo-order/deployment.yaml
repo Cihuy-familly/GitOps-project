@@ -32,7 +32,7 @@ spec:
           args:
             - |
               while [ ! -f /vault/secrets/api-key ]; do sleep 0.5; done
-              source /vault/secrets/api-key
+              . /vault/secrets/api-key
               python app.py
           ports:
             - containerPort: 5000
