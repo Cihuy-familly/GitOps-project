@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-order-grafana-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  demo-order-dashboard.json: |
+    {
+      "__inputs": [
+        {
+          "name": "DS_PROM",
+          "label": "VictoriaMetrics",
+          "description": "",
+          "type": "datasource",
+          "pluginId": "prometheus",
+          "pluginName": "Prometheus"
+        }
+      ],
+      "__requires": [
+        {"type": "grafana", "id": "grafana", "name": "Grafana", "version": "8.0.0"},
+        {"type": "panel", "id": "timeseries", "name": "Time series", "version": ""},
+        {"type": "panel", "id": "stat", "name": "Stat", "version": ""},
+        {"type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "1.0.0"}
+      ],
+      "title": "Demo Order Service",
+      "uid": "demo-order-service",
+      "tags": ["demo-order", "cihuyproject"],
+      "timezone": "browser",
+      "schemaVersion": 36,
+      "version": 1,
+      "refresh": "30s",
+      "panels": [
+        {
+          "title": "Request Rate",
+          "type": "stat",
+          "gridPos": {"h": 6, "w": 4, "x": 0, "y": 0},
+          "targets": [
+            {
+              "expr": "sum(rate(app_requests_total[5m]))",
+              "legendFormat": "req/s",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Total request rate per second (rolling 5m avg)"
+        },
+        {
+          "title": "Error Rate (5xx)",
+          "type": "stat",
+          "gridPos": {"h": 6, "w": 4, "x": 4, "y": 0},
+          "targets": [
+            {
+              "expr": "sum(rate(app_requests_total{status=~\"5\\\\d+\"}[5m])) / sum(rate(app_requests_total[5m])) * 100",
+              "legendFormat": "%",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Percentage of 5xx responses",
+          "type": "stat"
+        },
+        {
+          "title": "Current Orders",
+          "type": "stat",
+          "gridPos": {"h": 6, "w": 4, "x": 8, "y": 0},
+          "targets": [
+            {
+              "expr": "app_orders_current",
+              "legendFormat": "orders",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Current number of orders in store"
+        },
+        {
+          "title": "Request Duration (p50)",
+          "type": "stat",
+          "gridPos": {"h": 6, "w": 4, "x": 12, "y": 0},
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
+              "legendFormat": "p50",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Median request duration"
+        },
+        {
+          "title": "Request Duration (p99)",
+          "type": "stat",
+          "gridPos": {"h": 6, "w": 4, "x": 16, "y": 0},
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
+              "legendFormat": "p99",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "p99 request duration"
+        },
+        {
+          "title": "Request Rate by Status",
+          "type": "timeseries",
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+          "targets": [
+            {
+              "expr": "sum(rate(app_requests_total[5m])) by (status)",
+              "legendFormat": "{{status}}",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Request rate broken down by HTTP status code"
+        },
+        {
+          "title": "Request Duration (p50/p95/p99)",
+          "type": "timeseries",
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
+              "legendFormat": "p50",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
+              "legendFormat": "p95",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
+              "legendFormat": "p99",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Request latency distribution (p50, p95, p99)"
+        },
+        {
+          "title": "Orders Timeline",
+          "type": "timeseries",
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 14},
+          "targets": [
+            {
+              "expr": "app_orders_current",
+              "legendFormat": "Orders",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Current orders count over time"
+        }
+      ]
+    }

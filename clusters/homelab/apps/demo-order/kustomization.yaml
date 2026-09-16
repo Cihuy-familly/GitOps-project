@@ -6,3 +6,4 @@ resources:
   - service.yaml
 #  - external-secret.yaml
   - serviceaccount.yaml
+  - dashboard-configmap.yaml
