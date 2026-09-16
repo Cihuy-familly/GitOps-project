@@ -27,7 +27,7 @@ spec:
         - name: registry-credentials
       containers:
         - name: app
-          image: registry.cihuyproject.my.id/demo-order-service:latest
+          image: registry.cihuyproject.my.id/demo-order-service:latest # {"$imagepolicy": "flux-system:demo-order-service:tag"}
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -42,6 +42,8 @@ spec:
               value: "1.0.0"
             - name: API_KEY_FILE
               value: "/vault/secrets/api-key"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://tempo.monitoring.svc.cluster.local:4317"
           livenessProbe:
             httpGet:
               path: /health

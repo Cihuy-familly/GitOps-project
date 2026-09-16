@@ -7,3 +7,5 @@ resources:
 #  - external-secret.yaml
   - serviceaccount.yaml
   - dashboard-configmap.yaml
+  - image-repository.yaml
+  - image-update-automation.yaml

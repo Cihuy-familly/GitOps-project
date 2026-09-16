@@ -12,30 +12,53 @@ data:
         {
           "name": "DS_PROM",
           "label": "VictoriaMetrics",
-          "description": "",
           "type": "datasource",
           "pluginId": "prometheus",
           "pluginName": "Prometheus"
+        },
+        {
+          "name": "DS_LOKI",
+          "label": "Loki",
+          "type": "datasource",
+          "pluginId": "loki",
+          "pluginName": "Loki"
+        },
+        {
+          "name": "DS_TEMPO",
+          "label": "Tempo",
+          "type": "datasource",
+          "pluginId": "tempo",
+          "pluginName": "Tempo"
         }
       ],
       "__requires": [
         {"type": "grafana", "id": "grafana", "name": "Grafana", "version": "8.0.0"},
         {"type": "panel", "id": "timeseries", "name": "Time series", "version": ""},
         {"type": "panel", "id": "stat", "name": "Stat", "version": ""},
-        {"type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "1.0.0"}
+        {"type": "panel", "id": "logs", "name": "Logs", "version": ""},
+        {"type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "1.0.0"},
+        {"type": "datasource", "id": "loki", "name": "Loki", "version": "1.0.0"},
+        {"type": "datasource", "id": "tempo", "name": "Tempo", "version": "1.0.0"}
       ],
-      "title": "Demo Order Service",
+      "title": "Demo Order Service — Unified Observability",
       "uid": "demo-order-service",
       "tags": ["demo-order", "cihuyproject"],
       "timezone": "browser",
       "schemaVersion": 36,
-      "version": 1,
+      "version": 2,
       "refresh": "30s",
+      "description": "Dashboard gabungan: Metrics (VM), Logs (Loki), Traces (Tempo) untuk demo-order-service",
+      "links": [],
+      "time": {"from": "now-1h", "to": "now"},
+      "timepicker": {
+        "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h"],
+        "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d"]
+      },
       "panels": [
         {
           "title": "Request Rate",
           "type": "stat",
-          "gridPos": {"h": 6, "w": 4, "x": 0, "y": 0},
+          "gridPos": {"h": 5, "w": 4, "x": 0, "y": 0},
           "targets": [
             {
               "expr": "sum(rate(app_requests_total[5m]))",
@@ -48,7 +71,7 @@ data:
         {
           "title": "Error Rate (5xx)",
           "type": "stat",
-          "gridPos": {"h": 6, "w": 4, "x": 4, "y": 0},
+          "gridPos": {"h": 5, "w": 4, "x": 4, "y": 0},
           "targets": [
             {
               "expr": "sum(rate(app_requests_total{status=~\"5\\\\d+\"}[5m])) / sum(rate(app_requests_total[5m])) * 100",
@@ -62,7 +85,7 @@ data:
         {
           "title": "Current Orders",
           "type": "stat",
-          "gridPos": {"h": 6, "w": 4, "x": 8, "y": 0},
+          "gridPos": {"h": 5, "w": 4, "x": 8, "y": 0},
           "targets": [
             {
               "expr": "app_orders_current",
@@ -73,9 +96,9 @@ data:
           "description": "Current number of orders in store"
         },
         {
-          "title": "Request Duration (p50)",
+          "title": "Response Time (p50)",
           "type": "stat",
-          "gridPos": {"h": 6, "w": 4, "x": 12, "y": 0},
+          "gridPos": {"h": 5, "w": 3, "x": 12, "y": 0},
           "targets": [
             {
               "expr": "histogram_quantile(0.50, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
@@ -86,9 +109,9 @@ data:
           "description": "Median request duration"
         },
         {
-          "title": "Request Duration (p99)",
+          "title": "Response Time (p99)",
           "type": "stat",
-          "gridPos": {"h": 6, "w": 4, "x": 16, "y": 0},
+          "gridPos": {"h": 5, "w": 3, "x": 15, "y": 0},
           "targets": [
             {
               "expr": "histogram_quantile(0.99, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
@@ -99,9 +122,35 @@ data:
           "description": "p99 request duration"
         },
         {
+          "title": "Log Volume (Loki)",
+          "type": "stat",
+          "gridPos": {"h": 5, "w": 3, "x": 18, "y": 0},
+          "targets": [
+            {
+              "expr": "sum(count_over_time({app=\"demo-order-service\"}[5m]))",
+              "legendFormat": "logs/5m",
+              "datasource": {"type": "loki", "uid": "${DS_LOKI}"}
+            }
+          ],
+          "description": "Total log entries (last 5 minutes)"
+        },
+        {
+          "title": "Trace Rate (Tempo)",
+          "type": "stat",
+          "gridPos": {"h": 5, "w": 3, "x": 21, "y": 0},
+          "targets": [
+            {
+              "expr": "sum(rate(tempo_spanmetrics_latency_count[5m]))",
+              "legendFormat": "traces/5m",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Trace spans per 5 minutes (via SpanMetrics)"
+        },
+        {
           "title": "Request Rate by Status",
           "type": "timeseries",
-          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+          "gridPos": {"h": 8, "w": 8, "x": 0, "y": 5},
           "targets": [
             {
               "expr": "sum(rate(app_requests_total[5m])) by (status)",
@@ -112,9 +161,9 @@ data:
           "description": "Request rate broken down by HTTP status code"
         },
         {
-          "title": "Request Duration (p50/p95/p99)",
+          "title": "Request Duration Percentiles",
           "type": "timeseries",
-          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+          "gridPos": {"h": 8, "w": 8, "x": 8, "y": 5},
           "targets": [
             {
               "expr": "histogram_quantile(0.50, sum(rate(app_request_duration_seconds_bucket[5m])) by (le))",
@@ -135,9 +184,22 @@ data:
           "description": "Request latency distribution (p50, p95, p99)"
         },
         {
+          "title": "Log Level Breakdown",
+          "type": "timeseries",
+          "gridPos": {"h": 8, "w": 8, "x": 16, "y": 5},
+          "targets": [
+            {
+              "expr": "sum(count_over_time({app=\"demo-order-service\"} | logfmt | unwrap level [5m])) by (level)",
+              "legendFormat": "{{level}}",
+              "datasource": {"type": "loki", "uid": "${DS_LOKI}"}
+            }
+          ],
+          "description": "Log count by severity level (info, warning, error)"
+        },
+        {
           "title": "Orders Timeline",
           "type": "timeseries",
-          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 14},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 13},
           "targets": [
             {
               "expr": "app_orders_current",
@@ -146,6 +208,55 @@ data:
             }
           ],
           "description": "Current orders count over time"
+        },
+        {
+          "title": "Error Logs",
+          "type": "logs",
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 13},
+          "targets": [
+            {
+              "expr": "{app=\"demo-order-service\"} |= \"WARNING\" or {app=\"demo-order-service\"} |= \"error\" or {app=\"demo-order-service\"} |= \"Error\"",
+              "legendFormat": "",
+              "datasource": {"type": "loki", "uid": "${DS_LOKI}"}
+            }
+          ],
+          "description": "Recent error/warning logs from demo-order-service",
+          "options": {
+            "showTime": true,
+            "showLabels": true,
+            "wrapLogMessage": true
+          }
+        },
+        {
+          "title": "Recent Traces (Tempo)",
+          "type": "traces",
+          "gridPos": {"h": 10, "w": 12, "x": 0, "y": 21},
+          "targets": [
+            {
+              "query": "{app=\"demo-order-service\"}",
+              "queryType": "traceql",
+              "datasource": {"type": "tempo", "uid": "${DS_TEMPO}"}
+            }
+          ],
+          "description": "Search traces from demo-order-service (TraceQL)"
+        },
+        {
+          "title": "Trace Span Latency",
+          "type": "timeseries",
+          "gridPos": {"h": 10, "w": 12, "x": 12, "y": 21},
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, sum(rate(tempo_spanmetrics_latency_bucket[5m])) by (le, span_kind))",
+              "legendFormat": "p50 - {{span_kind}}",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(tempo_spanmetrics_latency_bucket[5m])) by (le, span_kind))",
+              "legendFormat": "p99 - {{span_kind}}",
+              "datasource": {"type": "prometheus", "uid": "${DS_PROM}"}
+            }
+          ],
+          "description": "Span latency distribution from Tempo span metrics (if metrics-generator enabled)"
         }
       ]
     }

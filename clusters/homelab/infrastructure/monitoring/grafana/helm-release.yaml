@@ -58,6 +58,20 @@ spec:
             access: proxy
             isDefault: true
 
+          - name: Loki
+            uid: loki
+            type: loki
+            url: http://loki:3100
+            access: proxy
+            isDefault: false
+
+          - name: Tempo
+            uid: tempo
+            type: tempo
+            url: http://tempo:3200
+            access: proxy
+            isDefault: false
+
     extraVolumeMounts:
       - name: alerting-config
         mountPath: /etc/grafana/provisioning/alerting

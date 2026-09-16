@@ -1,0 +1,76 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tempo
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: tempo
+      version: "1.x"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    # Single binary mode — 1 pod untuk semua komponen Tempo
+    # Cocok untuk homelab (resource terbatas)
+    tempo:
+      authEnabled: false
+      metricsGenerator:
+        enabled: true  # Generate metrics from traces (RED metrics)
+
+    # File system storage
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
+
+    # Persistence — 5Gi untuk traces
+    persistence:
+      enabled: true
+      size: 5Gi
+      storageClassName: local-path
+
+    # Resource limits — ringan untuk homelab
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+
+    # Service — OTLP gRPC (port 4317) dan HTTP (port 3200)
+    service:
+      enabled: true
+      ports:
+        - name: http
+          port: 3200
+          targetPort: 3200
+        - name: grpc
+          port: 9095
+          targetPort: 9095
+        - name: otlp-grpc
+          port: 4317
+          targetPort: 4317
+        - name: otlp-http
+          port: 4318
+          targetPort: 4318
+
+    # Retention — simpan traces selama 7 hari
+    tempoConfig:
+      retention:
+        blocks:
+          block_retention: 168h  # 7 days
