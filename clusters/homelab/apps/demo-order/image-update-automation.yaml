@@ -1,16 +1,4 @@
----
-# ImageUpdateAutomation — auto-commit image tag changes to Git
-#
-# Alur:
-#   1. ImageRepository detects new tag in registry
-#   2. ImagePolicy picks it as "latest"
-#   3. ImageUpdateAutomation scans deployment.yaml untuk setter annotation
-#   4. Menulis tag baru, commit + push sebagai "flux-system" bot user
-#
-# Prasyarat:
-#   - SSH deploy key di K8s Secret (yang sudah ada: flux-system)
-#   - GitRepository `flux-system` di namespace flux-system
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta2    ← ganti jadi v1
 kind: ImageUpdateAutomation
 metadata:
   name: demo-order-service
