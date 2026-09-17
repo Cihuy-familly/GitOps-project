@@ -5,4 +5,3 @@ resources:
   - infrastructure
   - apps
   - network
-  - cluster-store.yaml
