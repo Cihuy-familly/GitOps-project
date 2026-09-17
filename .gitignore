@@ -1,0 +1,4 @@
+# Local secret injection guides (not pushed to Git)
+manual-secrets/
+*.secret.md
+secrets/
