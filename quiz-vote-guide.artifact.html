@@ -1,0 +1,702 @@
+<title>Quiz-Vote — Flux Testing & Network Flow</title>
+<style>
+/* === Tokens === */
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --text: #1a1e24;
+  --text-secondary: #5a6470;
+  --accent: #0d9488;
+  --accent-dim: #b8dfda;
+  --accent-subtle: #e6f5f3;
+  --border: #dce0e5;
+  --code-bg: #eef0f3;
+  --diagram-line: #c0c8d2;
+  --badge-green: #dcfce7;
+  --badge-green-text: #166534;
+  --badge-blue: #dbeafe;
+  --badge-blue-text: #1e40af;
+  --badge-amber: #fef3c7;
+  --badge-amber-text: #92400e;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1318;
+    --surface: #1a1f28;
+    --text: #e3e8ef;
+    --text-secondary: #8895a7;
+    --accent: #14b8a6;
+    --accent-dim: #1a4a44;
+    --accent-subtle: #152b28;
+    --border: #2a3240;
+    --code-bg: #1e2530;
+    --diagram-line: #3a4455;
+    --badge-green: #14331f;
+    --badge-green-text: #6cdb9c;
+    --badge-blue: #142544;
+    --badge-blue-text: #7ab3ff;
+    --badge-amber: #3a2e0a;
+    --badge-amber-text: #f5c842;
+    --shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1318;
+  --surface: #1a1f28;
+  --text: #e3e8ef;
+  --text-secondary: #8895a7;
+  --accent: #14b8a6;
+  --accent-dim: #1a4a44;
+  --accent-subtle: #152b28;
+  --border: #2a3240;
+  --code-bg: #1e2530;
+  --diagram-line: #3a4455;
+  --badge-green: #14331f;
+  --badge-green-text: #6cdb9c;
+  --badge-blue: #142544;
+  --badge-blue-text: #7ab3ff;
+  --badge-amber: #3a2e0a;
+  --badge-amber-text: #f5c842;
+  --shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* === Base === */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === Layout === */
+.container { max-width: 880px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* === Typography === */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: 0.25rem;
+  text-wrap: balance;
+}
+.subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+h2 .section-icon { font-size: 1.2em; }
+h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.35rem;
+}
+p, li { color: var(--text-secondary); }
+p { margin-bottom: 0.75rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* === Cards === */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === Badges === */
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.badge-green { background: var(--badge-green); color: var(--badge-green-text); }
+.badge-blue { background: var(--badge-blue); color: var(--badge-blue-text); }
+.badge-amber { background: var(--badge-amber); color: var(--badge-amber-text); }
+
+/* === Code === */
+code, .code-inline {
+  font-family: 'SF Mono', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 0.86em;
+  background: var(--code-bg);
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-size: 0.86em;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+pre .cmd { color: var(--accent); }
+pre .comment { color: var(--text-secondary); font-style: italic; }
+pre .output { color: var(--text); }
+
+/* === Diagram === */
+.diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.diagram pre {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.82em;
+  line-height: 1.4;
+  text-align: center;
+}
+.diagram .node {
+  display: inline-block;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-dim);
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-weight: 500;
+  font-size: 0.85em;
+}
+.diagram .arrow { color: var(--diagram-line); font-size: 1.1em; }
+
+/* === Steps === */
+.step {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  align-items: flex-start;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+}
+.step-content { flex: 1; min-width: 0; }
+.step-content p { margin-bottom: 0.4rem; }
+.step-content .label { font-weight: 600; color: var(--text); }
+
+/* === Lists === */
+ul, ol { margin-bottom: 1rem; padding-left: 1.25rem; }
+li { margin-bottom: 0.3rem; }
+
+/* === Divider === */
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+/* === Command table === */
+.cmd-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+.cmd-table th {
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.cmd-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  vertical-align: top;
+}
+.cmd-table td:first-child { white-space: nowrap; font-family: 'SF Mono', monospace; font-size: 0.82em; }
+.cmd-table tr:last-child td { border-bottom: none; }
+.cmd-table tr:hover td { background: var(--accent-subtle); }
+</style>
+
+<div class="container">
+
+<h1>🧪 Quiz-Vote &mdash; Flux Testing &amp; Network Flow</h1>
+<p class="subtitle">Bagaimana Flux bekerja dengan quiz-vote dan bagaimana traffic mengalir dari browser sampai ke pod.</p>
+
+<!-- ================================================================ -->
+<!-- NETWORK FLOW -->
+<!-- ================================================================ -->
+
+<h2><span class="section-icon">🌐</span> Network Flow</h2>
+<p>Berikut jalur lengkap request dari user sampai ke container app. Setiap hop punya peran spesifik.</p>
+
+<div class="diagram">
+<pre>
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   1. 🧑 User                                   │
+  │                      vote.cihuylabs.my.id                      │
+  └──────────────────────┬──────────────────────────────────────────┘
+                         │ DNS lookup
+                         ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   2. 📡 Cloudflare DNS (Authoritative)          │
+  │                      → 104.21.49.237                           │
+  │                      → 172.67.195.211                          │
+  └──────────────────────┬──────────────────────────────────────────┘
+                         │ HTTP request
+                         ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   3. ☁️  Cloudflare Edge                        │
+  │                      Encrypted tunnel (Argo / Quick)            │
+  └──────────────────────┬──────────────────────────────────────────┘
+                         │ Warp / TCP tunnel
+                         ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   4. 🔒 cloudflared (cloudflare-tunnel NS)       │
+  │                      cloudflared-695b75d748-xxxxx               │
+  │                      Origin: http://istio-ingress.istio-system:80│
+  └──────────────────────┬──────────────────────────────────────────┘
+                         │ HTTP (cluster-internal)
+                         ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   5. 🚪 Istio Ingress Gateway (istio-system NS)  │
+  │                      istio-ingress-56db87f77-xxxxx              │
+  │                      Reads Host header: vote.cihuylabs.my.id    │
+  │                      Matches → sandbox-gateway (Gateway CRD)     │
+  └──────┬──────────────────────────────────────────────────────────┘
+         │
+         ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   6. 🧭 VirtualService (quiz-vote NS)            │
+  │                      Name: quiz-vote                             │
+  │                      Host: vote.cihuylabs.my.id                 │
+  │                      Route: frontend.quiz-vote.svc.cluster.local:5000│
+  └──────┬──────────────────────────────────────────────────────────┘
+         │
+         ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   7. 📦 frontend Service (quiz-vote NS)          │
+  │                      Selector: app=frontend                     │
+  │                      Port 5000 → targetPort 5000                │
+  └──────┬──────────────────────────────────────────────────────────┘
+         │
+         ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                   8. 🐳 frontend Pod (quiz-vote NS)              │
+  │                      frontend-xxxxx                             │
+  │                      2/2 containers: frontend + istio-proxy     │
+  │                                                                 │
+  │   ┌─────────────────┐     ┌──────────────────┐                  │
+  │   │  istio-proxy    │────▶│  frontend (app)  │                  │
+  │   │  (Envoy, 15006) │     │  Flask :5000     │                  │
+  │   └─────────────────┘     └────────┬─────────┘                  │
+  │                                    │                            │
+  │    ┌───────────────────────────────┼────────────────┐           │
+  │    │  Internal API calls           │                │           │
+  │    │  ▼                            ▼                │           │
+  │    │  vote-api:8000        result-api:8001         │           │
+  │    │  (vote-api NS)        (result-api NS)         │           │
+  │    │  ├─ POST /vote        ├─ GET /results         │           │
+  │    │  ├─ GET /quizzes      ├─ GET /health          │           │
+  │    │  └─ Redis/PG          └─ PG                   │           │
+  │    └───────────────────────────────────────────────┘           │
+  └─────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
+<h3>Hop-by-hop detail</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <div class="label">DNS Resolution</div>
+    <p>Browser lookup <code>vote.cihuylabs.my.id</code> → Cloudflare DNS balikin 2 IP anycast (104.21.49.237 dan 172.67.195.211).</p>
+    <span class="badge badge-green">Cloudflare</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <div class="label">Cloudflare Edge</div>
+    <p>Request masuk ke Cloudflare Edge terdekat. Karena DNS di-<em>proxied</em> (orange cloud), Cloudflare gak langsung forward ke IP origin, tapi lewat <strong>Cloudflare Tunnel</strong>.</p>
+    <span class="badge badge-green">Cloudflare</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <div class="label">cloudflared Pod</div>
+    <p>Di cluster K3s, <code>cloudflared</code> jalan dengan 2 replica. Dia koneksi keluar (outbound) ke Cloudflare Edge — jadi <strong>gak perlu buka port inbound</strong> di firewall. Dia forward request ke <code>http://istio-ingress.istio-system:80</code>.</p>
+    <span class="badge badge-blue">K3s</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content">
+    <div class="label">Istio Ingress Gateway</div>
+    <p>Gateway baca <code>Host: vote.cihuylabs.my.id</code> header dan cocokin dengan <code>sandbox-gateway</code> (Gateway CRD) yang listen di port 80. Gateway ini selector-nya <code>istio: ingressgateway</code>.</p>
+    <span class="badge badge-blue">K3s</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <div class="step-content">
+    <div class="label">VirtualService Routing</div>
+    <p>VirtualService <code>quiz-vote</code> (di namespace <code>quiz-vote</code>) cocokin host <code>vote.cihuylabs.my.id</code> dan route ke <code>frontend.quiz-vote.svc.cluster.local:5000</code>.</p>
+    <span class="badge badge-blue">K3s</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <div class="step-content">
+    <div class="label">Service → Pod</div>
+    <p>K8s Service <code>frontend</code> (ClusterIP) forward ke pod yang punya label <code>app: frontend</code>. Istio sidecar (Envoy) di pod handle traffic sebelum sampai ke container Flask.</p>
+    <span class="badge badge-blue">K3s</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">7</div>
+  <div class="step-content">
+    <div class="label">Internal API calls</div>
+    <p>Frontend Flask panggil <code>vote-api:8000</code> (POST /vote, GET /quizzes) dan <code>result-api:8001</code> (GET /results) — semua via service DNS, dalam namespace yang sama. vote-api pake Redis + Postgres, result-api langsung ke Postgres.</p>
+    <span class="badge badge-amber">Internal</span>
+  </div>
+</div>
+
+<hr>
+
+<!-- ================================================================ -->
+<!-- FLUX TESTING -->
+<!-- ================================================================ -->
+
+<h2><span class="section-icon">🧪</span> Flux Feature Testing</h2>
+<p>Semua test di bawah bisa dijalanin dari terminal kamu. Gunakan untuk verify bahwa Flux bekerja seperti yang diharapkan.</p>
+
+<!-- ---- A. Basic Reconciliation ---- -->
+<h3>🔁 A. Basic Reconciliation</h3>
+<p>Test bahwa Flux bisa menarik perubahan dari Git dan menerapkannya ke cluster.</p>
+
+<div class="card">
+  <div class="card-title">
+    <span>📋</span> Test Case: Edit deployment YAML → Flux deploy
+  </div>
+  <table class="cmd-table">
+    <tr><th>Step</th><th>Command</th><th>Expected Result</th></tr>
+    <tr>
+      <td>1</td>
+      <td><code># Edit file di GitOps repo<br>nano result-api-deployment.yaml</code></td>
+      <td>Ubah replica atau tag image</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>git commit -am "test" &amp;&amp; git push</code></td>
+      <td>Push ke remote</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>flux reconcile source git flux-system -n flux-system</code></td>
+      <td>Flux tarik commit baru</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><code>kubectl get pods -n quiz-vote -w</code></td>
+      <td>Pod restart dengan perubahan baru</td>
+    </tr>
+  </table>
+</div>
+
+<pre><code><span class="comment"># Alternative: force reconcile both source + kustomization</span>
+flux reconcile kustomization flux-system -n flux-system
+
+<span class="comment"># Cek status reconciliation</span>
+flux get kustomizations -n flux-system
+
+<span class="comment"># Detail log Flux untuk quiz-vote</span>
+flux get kustomizations -n flux-system | grep quiz-vote</code></pre>
+
+<!-- ---- B. Drift Detection ---- -->
+<h3>🔄 B. Drift Detection</h3>
+<p>Test bahwa Flux <strong>mengembalikan</strong> resource yang diedit manual ke keadaan di Git (desired state).</p>
+
+<div class="card">
+  <div class="card-title">
+    <span>📋</span> Test Case: Edit pod manual → Flux revert
+  </div>
+  <table class="cmd-table">
+    <tr><th>Step</th><th>Command</th><th>Expected Result</th></tr>
+    <tr>
+      <td>1</td>
+      <td><code>kubectl edit deployment -n quiz-vote frontend</code></td>
+      <td>Ubah replica jadi 3</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>kubectl get deploy -n quiz-vote frontend</code></td>
+      <td>DESIRED=3, CURRENT=3</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>flux reconcile kustomization flux-system -n flux-system</code></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><code>kubectl get deploy -n quiz-vote frontend</code></td>
+      <td><strong>DESIRED=1</strong> (balik ke Git state)</td>
+    </tr>
+  </tbody></table>
+</div>
+
+<p><strong>Kenapa ini penting:</strong> Kalau someone (atau automation lain) ubah resource di cluster langsung, Flux akan revert dalam beberapa menit. Ini yang dimaksud <strong>declarative reconciliation</strong> — cluster harus cocok dengan Git.</p>
+
+<p>Cek riwayat reconciliation Flux:</p>
+<pre><code><span class="comment"># Lihat event terakhir</span>
+kubectl describe kustomization -n flux-system flux-system
+
+<span class="comment"># Cek log kustomize-controller</span>
+kubectl logs -n flux-system deploy/kustomize-controller --tail=50</code></pre>
+
+<!-- ---- C. Suspend / Resume ---- -->
+<h3>⏸️ C. Suspend &amp; Resume</h3>
+<p>Test bahwa Flux bisa <strong>dihentikan sementara</strong> (misal untuk maintenance atau debugging manual).</p>
+
+<pre><code><span class="comment"># Suspend — Flux berhenti reconcile kustomization ini</span>
+flux suspend kustomization flux-system -n flux-system
+
+<span class="comment"># Edit sesuatu di cluster (misal ubah replica)</span>
+kubectl scale deployment -n quiz-vote frontend --replicas=3
+
+<span class="comment"># Verify — perubahan TETAP, gak direvert Flux</span>
+kubectl get deploy -n quiz-vote frontend
+<span class="comment"># → DESIRED=3 (karena Flux sedang suspend)</span>
+
+<span class="comment"># Resume — Flux lanjut reconcile lagi</span>
+flux resume kustomization flux-system -n flux-system
+
+<span class="comment"># Verify — Flux revert balik ke 1</span>
+kubectl get deploy -n quiz-vote frontend
+<span class="comment"># → DESIRED=1</span></code></pre>
+
+<div class="card">
+  <div class="card-title"><span>💡</span> Kapan pakai suspend?</div>
+  <ul>
+    <li>Emergency fix langsung di cluster (gak sempat push ke Git)</li>
+    <li>Debugging yang perlu cluster diverifikasi dulu</li>
+    <li>Maintenance window</li>
+  </ul>
+</div>
+
+<!-- ---- D. Image Automation ---- -->
+<h3>📦 D. Image Automation (Not Yet Setup)</h3>
+<p>Quiz-vote <strong>belum punya</strong> Flux Image Automation. Kalau setup, flow-nya bakal gini:</p>
+
+<pre><code><span class="comment"># Yang perlu ditambah di GitOps (contoh):</span>
+<span class="comment"># 1. ImageRepository — suruh Flux monitor registry</span>
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: quiz-vote-result-api
+  namespace: flux-system
+spec:
+  image: registry.cihuyproject.my.id/quiz-vote/result-api
+  interval: 1m
+
+<span class="comment"># 2. ImagePolicy — pilih tag terbaru</span>
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: quiz-vote-result-api
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: quiz-vote-result-api
+  policy:
+    semver:
+      range: ">=1.0.0"
+
+<span class="comment"># 3. Setter annotation di deployment YAML</span>
+<span class="comment"># image: registry.cihuyproject.my.id/quiz-vote/result-api:1.0.0</span>
+<span class="comment"># # {"$imagepolicy": "flux-system:quiz-vote-result-api:tag"}</span></code></pre>
+
+<div class="card">
+  <div class="card-title"><span>⚠️</span> Image Automation = Auto-commit ke Git</div>
+  <p>Flux bakal nulis tag baru langsung ke file YAML di repositori Git sebagai bot <strong>TeflonCD</strong>. Jadi setiap ada tag image baru, Flux commit + push ke repo → trigger reconciliation lagi.</p>
+  <p><em>Setup ini gak diwajibkan sekarang — untuk development, update manual tag juga cukup.</em></p>
+</div>
+
+<!-- ---- E. Health Check ---- -->
+<h3>❤️ E. Health Check &amp; Readiness</h3>
+<p>Test bahwa probe (liveness + readiness) jalan dengan benar dan Flux cuma deploy pods yang sehat.</p>
+
+<pre><code><span class="comment"># Cek status pod — semua harus 2/2 READY</span>
+kubectl get pods -n quiz-vote
+
+<span class="comment"># Cek endpoint service — harus ada IP</span>
+kubectl get endpoints -n quiz-vote frontend
+
+<span class="comment"># Test health endpoint langsung</span>
+kubectl exec -n quiz-vote deploy/frontend -c frontend -- \
+  python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/health').read())"
+
+<span class="comment"># Simulasi failure: matiin health endpoint (kalau ada env ERROR_RATE)</span>
+<span class="comment"># Set ERROR_RATE=1.0 via ConfigMap → semua request 500 → readiness probe gagal</span></code></pre>
+
+<p><strong>Cara test probe failure tanpa merusak app:</strong> set <code>ERROR_RATE=1.0</code> dan <code>ARTIFICIAL_DELAY_MS=30000</code> via ConfigMap. Pod akan gagal readiness probe dalam beberapa detik, Istio akan remove dari upstream, dan kamu akan lihat "no healthy upstream" lagi — tapi kali ini sengaja.</p>
+
+<pre><code><span class="comment"># Set error rate tinggi</span>
+kubectl patch configmap -n quiz-vote quiz-vote-config -p '{"data":{"ERROR_RATE":"1.0"}}'
+
+<span class="comment"># Tunggu 10-15 detik, cek pod</span>
+kubectl get pods -n quiz-vote -w
+<span class="comment"># → frontend akan jadi 1/2 (sidecar aja yang jalan)</span>
+
+<span class="comment"># Balikin normal</span>
+kubectl patch configmap -n quiz-vote quiz-vote-config -p '{"data":{"ERROR_RATE":"0.0"}}'</code></pre>
+
+<!-- ---- F. Notification ---- -->
+<h3>🔔 F. Flux Notifications</h3>
+<p>Cek apakah Discord notification sudah terkirim untuk event reconciliation.</p>
+
+<pre><code><span class="comment"># Cek Provider dan Alert yang sudah dikonfigurasi</span>
+kubectl get providers -n flux-system
+kubectl get alerts -n flux-system
+
+<span class="comment"># Detail konfigurasi</span>
+kubectl describe provider -n flux-system discord
+kubectl describe alert -n flux-system discord-alerts
+
+<span class="comment"># Cek event yang baru saja terjadi</span>
+kubectl get events -n flux-system --sort-by='.lastTimestamp' | tail -20</code></pre>
+
+<p>Notifikasi yang dikirim Flux ke Discord:</p>
+<div class="card">
+  <div class="card-title"><span>📨</span> Event types yang trigger notif</div>
+  <ul>
+    <li>✅ <strong>Kustomization ready</strong> — reconcile sukses</li>
+    <li>❌ <strong>Kustomization failed</strong> — reconcile error</li>
+    <li>✅ <strong>HelmRelease ready</strong> — upgrade sukses</li>
+    <li>❌ <strong>HelmRelease failed</strong> — upgrade error</li>
+    <li>🔄 <strong>Git artifact updated</strong> — Flux tarik source baru</li>
+  </ul>
+</div>
+
+<!-- ---- G. Complete Test Matrix ---- -->
+<h3>📊 G. Complete Test Matrix</h3>
+<table class="cmd-table">
+  <tr><th>Feature</th><th>What to Test</th><th>How</th><th>Verify</th></tr>
+  <tr>
+    <td>Reconciliation</td>
+    <td>Flux apply perubahan dari Git</td>
+    <td>Edit YAML → git push → reconcile</td>
+    <td>Pod berubah sesuai YAML</td>
+  </tr>
+  <tr>
+    <td>Drift Detection</td>
+    <td>Flux revert perubahan manual</td>
+    <td>kubectl edit → tunggu Flux</td>
+    <td>Kembali ke Git state</td>
+  </tr>
+  <tr>
+    <td>Suspend/Resume</td>
+    <td>Flux berhenti reconcile sementara</td>
+    <td>flux suspend → ubah → flux resume</td>
+    <td>Perubahan manual bertahan saat suspend, hilang setelah resume</td>
+  </tr>
+  <tr>
+    <td>Source Update</td>
+    <td>Flux detect commit baru di Git</td>
+    <td>git push → flux reconcile source</td>
+    <td><code>flux get sources git</code> → artifact updated</td>
+  </tr>
+  <tr>
+    <td>Health Probe</td>
+    <td>Pod gak sehat → Istio hapus dari upstream</td>
+    <td>Set ERROR_RATE=1.0</td>
+    <td>Pod jadi 1/2, traffic 503</td>
+  </tr>
+  <tr>
+    <td>Notification</td>
+    <td>Discord notif terkirim</td>
+    <td>Trigger reconcile + cek Discord</td>
+    <td>Pesan di channel Discord</td>
+  </tr>
+  <tr>
+    <td>Multi-env</td>
+    <td>Perubahan di path berbeda</td>
+    <td>Edit file di path staging</td>
+    <td>Hanya cluster staging yg berubah</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- ---- Quick Reference ---- -->
+<h2><span class="section-icon">⚡</span> Quick Reference — Flux Commands</h2>
+
+<table class="cmd-table">
+  <tr><th>Command</th><th>Purpose</th></tr>
+  <tr><td><code>flux get kustomizations -n flux-system</code></td><td>Lihat semua Kustomization dan statusnya</td></tr>
+  <tr><td><code>flux get sources git -n flux-system</code></td><td>Lihat status Git repository source</td></tr>
+  <tr><td><code>flux get images -n flux-system</code></td><td>Lihat ImagePolicy dan tag terbaru</td></tr>
+  <tr><td><code>flux reconcile source git flux-system</code></td><td>Tarik commit Git terbaru (force)</td></tr>
+  <tr><td><code>flux reconcile kustomization flux-system</code></td><td>Apply Kustomization (force)</td></tr>
+  <tr><td><code>flux suspend kustomization flux-system</code></td><td>Pause reconciliation</td></tr>
+  <tr><td><code>flux resume kustomization flux-system</code></td><td>Resume reconciliation</td></tr>
+  <tr><td><code>flux events --watch</code></td><td>Live-stream semua event Flux</td></tr>
+  <tr><td><code>flux check</code></td><td>Cek health komponen Flux di cluster</td></tr>
+</table>
+
+<p style="margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">
+  Generated 2026-09-17 &middot; K3s homelab &middot; quiz-vote app
+</p>
+
+</div>

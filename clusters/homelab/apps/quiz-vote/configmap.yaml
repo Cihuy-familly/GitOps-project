@@ -11,8 +11,8 @@ data:
   # Redis connection
   REDIS_URL: "redis://redis:6379/0"
 
-  # OpenTelemetry tracing (set OTEL_EXPORTER_OTLP_ENDPOINT to enable)
-  OTEL_EXPORTER_OTLP_ENDPOINT: ""
+  # OpenTelemetry tracing — send traces to Tempo
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo.monitoring:4318"
   OTEL_TRACES_SAMPLER: "always_on"
 
   # Failure testing controls
