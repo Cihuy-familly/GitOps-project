@@ -5,4 +5,3 @@ resources:
   - k3s
   - vault
   - csi-driver
-  - vault-csi-provider
