@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quiz-vote-config
+  namespace: quiz-vote
+data:
+  # Service URLs
+  VOTE_API_URL: "http://vote-api:8000"
+  RESULT_API_URL: "http://result-api:8001"
+
+  # Redis connection
+  REDIS_URL: "redis://redis:6379/0"
+
+  # OpenTelemetry tracing (set OTEL_EXPORTER_OTLP_ENDPOINT to enable)
+  OTEL_EXPORTER_OTLP_ENDPOINT: ""
+  OTEL_TRACES_SAMPLER: "always_on"
+
+  # Failure testing controls
+  ARTIFICIAL_DELAY_MS: "0"
+  ERROR_RATE: "0.0"

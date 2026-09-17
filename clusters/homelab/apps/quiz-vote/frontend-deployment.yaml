@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: quiz-vote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      imagePullSecrets:
+        - name: registry-credentials
+      containers:
+        - name: frontend
+          image: registry.cihuyproject.my.id/quiz-vote/frontend:1.0.0
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: VOTE_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: quiz-vote-config
+                  key: VOTE_API_URL
+            - name: RESULT_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: quiz-vote-config
+                  key: RESULT_API_URL
+            - name: OTEL_SERVICE_NAME
+              value: "frontend"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: quiz-vote-config
+                  key: OTEL_EXPORTER_OTLP_ENDPOINT
+            - name: ARTIFICIAL_DELAY_MS
+              valueFrom:
+                configMapKeyRef:
+                  name: quiz-vote-config
+                  key: ARTIFICIAL_DELAY_MS
+            - name: ERROR_RATE
+              valueFrom:
+                configMapKeyRef:
+                  name: quiz-vote-config
+                  key: ERROR_RATE
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10

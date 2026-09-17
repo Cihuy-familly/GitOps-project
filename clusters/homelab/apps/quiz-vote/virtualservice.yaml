@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: quiz-vote
+  namespace: quiz-vote
+spec:
+  hosts:
+    - "vote.cihuylabs.my.id"
+  gateways:
+    - default/sandbox-gateway
+  http:
+    - route:
+        - destination:
+            host: frontend.quiz-vote.svc.cluster.local
+            port:
+              number: 5000

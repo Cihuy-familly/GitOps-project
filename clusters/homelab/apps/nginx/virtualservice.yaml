@@ -6,7 +6,8 @@ metadata:
 spec:
   hosts:
     - "cihuylabs.my.id"
-    - "*.cihuylabs.my.id"
+    - "portfolio.cihuylabs.my.id"
+    - "demo.cihuylabs.my.id"
   gateways:
     - sandbox-gateway
   http:
@@ -34,11 +35,5 @@ spec:
             host: demo-order-service.demo-order.svc.cluster.local
             port:
               number: 5000
-    - match:
-        - uri:
-            prefix: /
-      route:
-        - destination:
-            host: nginx.default.svc.cluster.local
-            port:
-              number: 80
+    # Note: catch-all wildcard route removed.
+    # All subdomains must be explicitly listed in hosts and matched above.

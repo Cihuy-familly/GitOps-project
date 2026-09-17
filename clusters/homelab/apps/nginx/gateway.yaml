@@ -13,4 +13,6 @@ spec:
         protocol: HTTP
       hosts:
         - "cihuylabs.my.id"
-        - "*.cihuylabs.my.id"
+        - "portfolio.cihuylabs.my.id"
+        - "demo.cihuylabs.my.id"
+        - "vote.cihuylabs.my.id"

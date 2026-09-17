@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-generator
+  namespace: quiz-vote
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: load-generator
+  template:
+    metadata:
+      labels:
+        app: load-generator
+    spec:
+      imagePullSecrets:
+        - name: registry-credentials
+      containers:
+        - name: load-generator
+          image: registry.cihuyproject.my.id/quiz-vote/load-generator:1.0.0
+          env:
+            - name: VOTE_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: quiz-vote-config
+                  key: VOTE_API_URL
+            - name: VOTES_PER_SECOND
+              value: "0.5"
+            - name: ERROR_RATE
+              value: "0.0"
+            - name: LATENCY_MAX
+              value: "0.0"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 128Mi

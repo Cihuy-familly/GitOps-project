@@ -4,4 +4,5 @@ resources:
   - nginx
   - cihuylabs-landing
   - vault-csi-test
+  - quiz-vote
   
