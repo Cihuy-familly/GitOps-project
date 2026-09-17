@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - configmap.yaml
+  - postgres-secret.yaml
   - postgres-pvc.yaml
   - postgres-statefulset.yaml
   - postgres-service.yaml
@@ -17,4 +18,3 @@ resources:
   - load-gen-deployment.yaml
   - virtualservice.yaml
   - service-monitors.yaml
-  - grafana-dashboard.yaml

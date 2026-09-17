@@ -10,3 +10,4 @@ resources:
   - tempo.yaml
   - promtail.yaml
   - grafana-virtualservice.yaml
+  - grafana-dashboard.yaml
