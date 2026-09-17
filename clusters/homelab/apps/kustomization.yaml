@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - nginx
   - cihuylabs-landing
+  - vault-csi-test
   
