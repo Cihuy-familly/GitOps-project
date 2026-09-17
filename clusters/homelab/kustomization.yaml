@@ -5,5 +5,4 @@ resources:
   - infrastructure
   - apps
   - network
-  - github-action
   - cluster-store.yaml
