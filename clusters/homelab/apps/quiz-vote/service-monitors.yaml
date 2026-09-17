@@ -1,0 +1,63 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-metrics
+  namespace: quiz-vote
+  labels:
+    app: frontend
+    release: vmagent
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5000"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+    - port: 5000
+      targetPort: 5000
+      name: http-metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote-api-metrics
+  namespace: quiz-vote
+  labels:
+    app: vote-api
+    release: vmagent
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  selector:
+    app: vote-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: http-metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: result-api-metrics
+  namespace: quiz-vote
+  labels:
+    app: result-api
+    release: vmagent
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8001"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  selector:
+    app: result-api
+  ports:
+    - port: 8001
+      targetPort: 8001
+      name: http-metrics
