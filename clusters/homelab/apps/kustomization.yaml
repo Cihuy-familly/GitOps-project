@@ -5,4 +5,5 @@ resources:
   - cihuylabs-landing
   - vault-csi-test
   - quiz-vote
+  - monitoring
   
