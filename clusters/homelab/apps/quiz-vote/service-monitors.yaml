@@ -6,7 +6,6 @@ metadata:
   namespace: quiz-vote
   labels:
     app: frontend
-    release: vmagent
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "5000"
@@ -18,7 +17,7 @@ spec:
   ports:
     - port: 5000
       targetPort: 5000
-      name: http-metrics
+      name: http
 ---
 apiVersion: v1
 kind: Service
@@ -27,7 +26,6 @@ metadata:
   namespace: quiz-vote
   labels:
     app: vote-api
-    release: vmagent
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "8000"
@@ -39,7 +37,7 @@ spec:
   ports:
     - port: 8000
       targetPort: 8000
-      name: http-metrics
+      name: http
 ---
 apiVersion: v1
 kind: Service
@@ -48,7 +46,6 @@ metadata:
   namespace: quiz-vote
   labels:
     app: result-api
-    release: vmagent
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "8001"
@@ -60,4 +57,4 @@ spec:
   ports:
     - port: 8001
       targetPort: 8001
-      name: http-metrics
+      name: http
