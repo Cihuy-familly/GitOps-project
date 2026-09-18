@@ -55,6 +55,8 @@ spec:
                 enabled: true
               serviceMap:
                 datasourceUid: VictoriaMetrics
+    # Disable default dashboards from chart
+    defaultDashboardsEnabled: false
     # Dashboard sidecar — auto-discover ConfigMaps with grafana_dashboard label
     sidecar:
       dashboards:
