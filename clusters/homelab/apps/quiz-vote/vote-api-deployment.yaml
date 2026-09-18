@@ -21,7 +21,7 @@ spec:
         - name: registry-credentials
       containers:
         - name: vote-api
-          image: registry.cihuyproject.my.id/quiz-vote/vote-api:1.0.0
+          image: registry.cihuyproject.my.id/quiz-vote/vote-api:1.0.1
           ports:
             - containerPort: 8000
               name: http
