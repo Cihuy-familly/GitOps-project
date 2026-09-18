@@ -18,21 +18,6 @@ spec:
     tempo:
       repository: grafana/tempo
       tag: latest
-      retention: 30d
-      receivers:
-        otlp:
-          protocols:
-            http:
-              endpoint: 0.0.0.0:4318
-            grpc:
-              endpoint: 0.0.0.0:4317
-      storage:
-        trace:
-          backend: local
-          local:
-            path: /var/tempo/traces
-          wal:
-            path: /var/tempo/wal
     persistence:
       enabled: true
       size: 20Gi

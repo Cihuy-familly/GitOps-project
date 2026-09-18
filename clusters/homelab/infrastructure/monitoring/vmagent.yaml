@@ -15,13 +15,12 @@ spec:
         namespace: monitoring
       interval: 1h
   values:
-    remoteWrite:
-      - url: "http://victoria-metrics-server:8428/api/v1/write"
+    remoteWriteUrls:
+      - "http://victoria-metrics-server:8428/api/v1/write"
     config:
       global:
         scrape_interval: 15s
       scrape_configs:
-        # Kubernetes pods with prometheus.io annotations
         - job_name: 'kubernetes-pods'
           kubernetes_sd_configs:
             - role: pod
@@ -47,43 +46,6 @@ spec:
             - source_labels: [__meta_kubernetes_pod_label_app]
               action: replace
               target_label: app
-        # Kubernetes nodes
-        - job_name: 'kubernetes-nodes'
-          kubernetes_sd_configs:
-            - role: node
-          relabel_configs:
-            - action: labelmap
-              regex: __meta_kubernetes_node_label_(.+)
-        # Kubernetes service endpoints
-        - job_name: 'kubernetes-service-endpoints'
-          kubernetes_sd_configs:
-            - role: endpoints
-          relabel_configs:
-            - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
-              action: keep
-              regex: true
-            - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-              action: replace
-              target_label: __scheme__
-              regex: (https?)
-            - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-              action: replace
-              target_label: __metrics_path__
-              regex: (.+)
-            - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-              action: replace
-              target_label: __address__
-              regex: ([^:]+)(?::\d+)?;(\d+)
-              replacement: $1:$2
-            - source_labels: [__meta_kubernetes_namespace]
-              action: replace
-              target_label: namespace
-            - source_labels: [__meta_kubernetes_service_name]
-              action: replace
-              target_label: service
-            - source_labels: [__meta_kubernetes_pod_name]
-              action: replace
-              target_label: pod
     resources:
       requests:
         cpu: 200m
