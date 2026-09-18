@@ -34,12 +34,12 @@ spec:
         datasources:
           - name: VictoriaMetrics
             type: prometheus
-            url: http://victoria-metrics-server:8428
+            url: http://victoria-metrics-victoria-metrics-single-server:8428
             access: proxy
             isDefault: true
           - name: Loki
             type: loki
-            url: http://loki-gateway:3100
+            url: http://loki-gateway:80
             access: proxy
           - name: Tempo
             type: tempo
@@ -55,9 +55,7 @@ spec:
                 enabled: true
               serviceMap:
                 datasourceUid: VictoriaMetrics
-    # Disable default dashboards from chart
     defaultDashboardsEnabled: false
-    # Dashboard sidecar — auto-discover ConfigMaps with grafana_dashboard label
     sidecar:
       dashboards:
         enabled: true

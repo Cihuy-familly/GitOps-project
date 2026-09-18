@@ -16,7 +16,7 @@ spec:
       interval: 1h
   values:
     remoteWriteUrls:
-      - "http://victoria-metrics-server:8428/api/v1/write"
+      - "http://victoria-metrics-victoria-metrics-single-server:8428/api/v1/write"
     config:
       global:
         scrape_interval: 15s
