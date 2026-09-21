@@ -517,7 +517,7 @@ data:
                 "type": "prometheus",
                 "uid": "VictoriaMetrics"
               },
-              "expr": "sum(vote_api_votes_total{namespace=\"quiz-vote\"})",
+              "expr": "sum(vote_api_votes_total{namespace=\"quiz-vote\"}) or vector(0)",
               "refId": "A"
             }
           ],
