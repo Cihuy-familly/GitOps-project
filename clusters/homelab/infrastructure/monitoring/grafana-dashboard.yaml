@@ -485,7 +485,7 @@ data:
                   },
                   {
                     "color": "red",
-                    "value": 80
+                    "value": null
                   }
                 ]
               },
