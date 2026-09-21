@@ -2,3 +2,4 @@
 manual-secrets/
 *.secret.md
 secrets/
+EDITOR.yml
