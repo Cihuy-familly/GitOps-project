@@ -457,7 +457,7 @@ data:
                 "type": "prometheus",
                 "uid": "VictoriaMetrics"
               },
-              "expr": "sum by (endpoint) (rate(frontend_errors_total{namespace=\"quiz-vote\"}[5m])) / sum by (endpoint) (rate(frontend_requests_total{namespace=\"quiz-vote\"}[5m]))",
+              "expr": "(sum by (endpoint) (rate(frontend_errors_total{namespace=\"quiz-vote\"}[5m])) / sum by (endpoint) (rate(frontend_requests_total{namespace=\"quiz-vote\"}[5m]))) or vector(0)",
               "legendFormat": "{{endpoint}}",
               "refId": "A"
             }
