@@ -34,6 +34,56 @@ spec:
           static_configs:
             - targets: ['result-api.quiz-vote.svc:8001']
           metrics_path: /metrics
+        # Istio control plane metrics
+        - job_name: 'istiod'
+          kubernetes_sd_configs:
+            - role: endpoints
+              namespaces:
+                names:
+                  - istio-system
+
+          relabel_configs:
+            - source_labels:
+                - __meta_kubernetes_service_name
+                - __meta_kubernetes_endpoint_port_name
+              action: keep
+              regex: istiod;http-monitoring
+
+            - source_labels:
+                - __meta_kubernetes_namespace
+              target_label: namespace
+
+            - source_labels:
+                - __meta_kubernetes_pod_name
+              target_label: pod
+        # Istio ingress gateway / Envoy metrics
+        - job_name: 'istio-ingress'
+          metrics_path: /stats/prometheus
+
+          kubernetes_sd_configs:
+            - role: pod
+              namespaces:
+                names:
+                  - istio-system
+
+          relabel_configs:
+            - source_labels:
+                - __meta_kubernetes_pod_label_app
+              action: keep
+              regex: istio-ingressgateway
+
+            - source_labels:
+                - __meta_kubernetes_pod_container_port_name
+              action: keep
+              regex: '.*-envoy-prom'
+
+            - source_labels:
+                - __meta_kubernetes_namespace
+              target_label: namespace
+
+            - source_labels:
+                - __meta_kubernetes_pod_name
+              target_label: pod
         # Kubernetes service endpoints with annotations
         - job_name: 'kubernetes-service-endpoints'
           kubernetes_sd_configs:

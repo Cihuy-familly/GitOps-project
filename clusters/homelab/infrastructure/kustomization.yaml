@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - istio
   - k3s
-  - vault
+#  - vault
   - csi-driver
-  - monitoring
+#  - monitoring
